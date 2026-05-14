@@ -191,10 +191,6 @@ async function startServer() {
       if (!userDbInfo) return res.status(404).json({error: "User not found"});
 
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
-        return res.json({ title: "Daily Quest", message: "Make a prediction today for bonus points!" });
-      }
-
       const ai = new GoogleGenAI({ apiKey });
       const prompt = `
 Act as an Adaptive AI for a sports prediction platform.
@@ -220,10 +216,9 @@ Example: {"title": "Quest: Comeback Kid!", "message": "You lost your streak, but
       
       const responseData = JSON.parse(response.text || '{"title": "Daily Quest", "message": "Make a prediction today for bonus points!"}');
       res.json(responseData);
-    } catch (e) {
-      console.error("AI Quest Error:", e);
-      // Fallback
-      res.json({ title: "Daily Quest", message: "Make a prediction today for bonus points!" });
+    } catch (e: any) {
+      console.error("AI Quest Error:", e.message || e);
+      res.json({ title: "Daily Quest", message: "Make a prediction today for a 2x bonus!" });
     }
   });
 
